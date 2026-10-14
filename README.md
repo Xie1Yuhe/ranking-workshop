@@ -11,7 +11,20 @@
 
 ## 一、下载后怎么跑
 
-1. 安装 [Node.js](https://nodejs.org/) 18 或更高（必须）；
+### 方式一：免安装绿色包（推荐，什么都不用装）
+
+到 [Releases](https://github.com/Xie1Yuhe/ranking-workshop/releases) 下载
+**`ranking-workshop-portable-win-x64.zip`**（约 33 MB，自带 Node.js 运行时），
+解压后双击 **`启动程序.cmd`** 即可。
+
+第一次运行 Windows 可能弹「已保护你的电脑」→ 点「更多信息」→「仍要运行」。
+解压目录里附了一份 **`使用说明.txt`**，写清了每个按钮干什么。
+
+> 绿色包适用于 Windows 10 / 11（x64），不需要管理员权限、不需要联网。
+
+### 方式二：从源码跑（需要自己装 Node.js）
+
+1. 安装 [Node.js](https://nodejs.org/) 18 或更高；
 2. 双击 **`启动程序.cmd`**。
 
 程序会启动一个本地服务，并用 Edge / Chrome 的「应用模式」打开一个没有地址栏的窗口。
@@ -19,7 +32,7 @@
 
 也可以双击 **`静默启动.vbs`**，完全不显示命令行黑窗。
 
-### 只想在浏览器里用？
+#### 只想在浏览器里用？
 
 ```powershell
 node server\server.js
@@ -27,15 +40,15 @@ node server\server.js
 
 终端会打印实际地址（默认 `http://127.0.0.1:7791/`），用浏览器打开即可。
 
-### 环境要求
+#### 环境要求
 
 - Windows 10 / 11
-- Node.js 18+（必需）
+- Node.js 18+（源码方式必需）
 - Microsoft Edge 或 Google Chrome（系统一般自带）
 
 启动脚本会依次在这些位置找 Node：
 
-1. 程序目录下的 `runtime\node.exe`
+1. 程序目录下的 `runtime\node.exe`（绿色包就是靠这一条免安装）
 2. 系统 PATH 里的 `node.exe`
 3. `C:\Program Files\nodejs\node.exe`
 4. `%LOCALAPPDATA%\Programs\nodejs\node.exe`
