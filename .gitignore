@@ -1,0 +1,20 @@
+# 依赖与运行时（可选目录，用户自己放 node.exe）
+runtime/
+
+# 榜单运行时数据：不上传，克隆后由 seed.json 自动生成
+data/state.json
+data/*.tmp
+data/error.log
+data/window-profile/
+data/debug-*.png
+
+# 可选的个人榜单快照（内含内嵌图片，体积大且涉及版权，不随代码分发）
+可选数据/*.json
+
+# 系统与编辑器
+Thumbs.db
+desktop.ini
+.DS_Store
+*.log
+*.zip
+node_modules/

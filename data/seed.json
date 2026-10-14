@@ -1,0 +1,71 @@
+{
+  "version": 3,
+  "boardTitle": "从夯到拉 · 排名工坊",
+  "settings": {
+    "theme": "black-gold",
+    "tierStyle": "card",
+    "compact": false,
+    "showNames": true,
+    "showNotes": false,
+    "sort": "manual",
+    "search": "",
+    "tierFilter": "all",
+    "noteFilter": "all",
+    "exportOptions": {
+      "showTitle": true,
+      "showPool": false,
+      "showSummary": false
+    }
+  },
+  "tiers": [
+    {
+      "key": "t0",
+      "label": "超大杯上",
+      "description": "不可名状之神，独断万古，比肩原作者",
+      "color": "#f87e7d"
+    },
+    {
+      "key": "t1",
+      "label": "超大杯中",
+      "description": "人类可理解范围之内的绝对强者",
+      "color": "#f8bf7c"
+    },
+    {
+      "key": "t2",
+      "label": "超大杯下",
+      "description": "稳定站在顶端，几乎没有短板",
+      "color": "#fcdf7b"
+    },
+    {
+      "key": "t3",
+      "label": "大杯上",
+      "description": "表现优秀，值得优先推荐",
+      "color": "#fdfd79"
+    },
+    {
+      "key": "t4",
+      "label": "大杯中",
+      "description": "中规中矩，适合放在中段",
+      "color": "#c5fc7a"
+    },
+    {
+      "key": "t5",
+      "label": "大杯下",
+      "description": "表现偏弱，需要靠后排布",
+      "color": "#8efc7f"
+    },
+    {
+      "key": "t6",
+      "label": "中杯",
+      "description": "删了没人知道",
+      "color": "#8efeff"
+    },
+    {
+      "key": "t7",
+      "label": "小杯",
+      "description": "由于倒霉被人反复点名批评",
+      "color": "#88bfff"
+    }
+  ],
+  "images": []
+}

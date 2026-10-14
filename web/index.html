@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>从夯到拉 · 排名工坊</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="vendor/html2canvas.min.js"></script>
+</head>
+
+<body data-theme="black-gold">
+    <div class="app" id="app" data-tier-style="card">
+        <!-- ================= 顶栏 ================= -->
+        <header class="topbar">
+            <div class="brand">
+                <div class="brand__mark">夯</div>
+                <div class="brand__name">从夯到拉 · 排名工坊</div>
+            </div>
+            <div class="credit" title="本榜单工具的制作人">
+                <span class="credit__label">制作人</span>
+                <strong class="credit__name">bilibili@守护全世界最好的梦子</strong>
+            </div>
+
+            <div class="save-state" id="saveState" data-state="idle" title="榜单会自动保存到程序目录的 data\state.json">
+                <span class="save-state__dot"></span>
+                <span id="saveStateText">正在读取数据…</span>
+            </div>
+
+            <div class="topbar__tools">
+                <button class="btn btn--sm" id="importBtn" title="导入之前导出的 JSON 快照">导入 JSON</button>
+                <button class="btn btn--sm" id="exportJsonBtn" title="把当前榜单导出成 JSON 文件">导出 JSON</button>
+                <button class="btn btn--sm present-hide" id="presentBtn" title="逐张过一遍内容池，适合录视频">演示模式</button>
+                <button class="btn btn--sm present-hide" id="fullscreenBtn" title="全屏显示">全屏</button>
+                <button class="btn btn--sm btn--primary" id="exportBtn" title="导出当前榜单为图片（Ctrl+S）">导出图片</button>
+                <button class="btn btn--icon btn--ghost" id="helpBtn" title="使用说明">?</button>
+            </div>
+        </header>
+
+        <div class="main">
+            <!-- ================= 侧栏 ================= -->
+            <aside class="side">
+                <section class="side-card">
+                    <div class="side-card__title">榜单</div>
+                    <label class="field">
+                        <span>榜单标题</span>
+                        <input type="text" id="boardTitleInput" placeholder="输入榜单名称">
+                    </label>
+                    <label class="field">
+                        <span>搜索内容</span>
+                        <input type="search" id="searchInput" placeholder="按名称或点评查找">
+                    </label>
+                </section>
+
+                <section class="side-card">
+                    <div class="side-card__title">统计 <small id="statRatio">—</small></div>
+                    <div class="stat-grid">
+                        <div class="stat">
+                            <span class="stat__label">总内容数</span>
+                            <strong class="stat__value" id="statTotal">0</strong>
+                        </div>
+                        <div class="stat">
+                            <span class="stat__label">已入榜</span>
+                            <strong class="stat__value" id="statRanked">0</strong>
+                        </div>
+                        <div class="stat">
+                            <span class="stat__label">待处理</span>
+                            <strong class="stat__value" id="statPending">0</strong>
+                        </div>
+                        <div class="stat">
+                            <span class="stat__label">完成度</span>
+                            <strong class="stat__value" id="statRate">0<small>%</small></strong>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="side-card">
+                    <div class="side-card__title">赛道概览</div>
+                    <div class="tier-list" id="tierList"></div>
+                </section>
+
+                <details class="side-card" id="settingsPanel">
+                    <summary class="side-card__title" style="cursor: pointer; margin-bottom: 0;">设置</summary>
+                    <div class="stack" style="margin-top: 10px;">
+                        <label class="field">
+                            <span>内容池排序</span>
+                            <select id="sortSelect">
+                                <option value="manual">保持当前顺序</option>
+                                <option value="name-asc">按名称 A → Z</option>
+                                <option value="newest">按上传时间：最新优先</option>
+                                <option value="oldest">按上传时间：最早优先</option>
+                            </select>
+                        </label>
+                        <label class="field">
+                            <span>赛道标题风格</span>
+                            <select id="tierStyleSelect">
+                                <option value="card">卡片化</option>
+                                <option value="minimal">极简</option>
+                                <option value="neon">霓虹</option>
+                            </select>
+                        </label>
+                        <div class="field">
+                            <span>主题</span>
+                            <div class="theme-row" id="themeRow">
+                                <button class="theme-chip" data-theme="black-gold" type="button">
+                                    <span class="theme-chip__swatch" style="background: linear-gradient(120deg,#f0d79a,#a97c2c);"></span>
+                                    黑金
+                                </button>
+                                <button class="theme-chip" data-theme="deep-space" type="button">
+                                    <span class="theme-chip__swatch" style="background: linear-gradient(120deg,#a8c8ff,#3568c9);"></span>
+                                    深空蓝
+                                </button>
+                                <button class="theme-chip" data-theme="cream" type="button">
+                                    <span class="theme-chip__swatch" style="background: linear-gradient(120deg,#e9dcbb,#c79b3c);"></span>
+                                    奶油白
+                                </button>
+                            </div>
+                        </div>
+                        <div class="field">
+                            <span>显示选项</span>
+                            <div class="inline">
+                                <label class="switch">
+                                    <input type="checkbox" id="compactToggle">
+                                    <span>紧凑模式</span>
+                                </label>
+                                <label class="switch">
+                                    <input type="checkbox" id="nameToggle" checked>
+                                    <span>显示名称</span>
+                                </label>
+                                <label class="switch">
+                                    <input type="checkbox" id="noteToggle">
+                                    <span>显示点评</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <section class="side-card">
+                    <div class="side-card__title">待排名内容池 <small id="poolCountLabel">0 项</small></div>
+                    <div class="pool-tools">
+                        <button class="btn btn--sm btn--primary" id="uploadBtn">上传图片</button>
+                        <button class="btn btn--sm" id="addTextFocusBtn">加文字</button>
+                    </div>
+                    <div class="pool-tools">
+                        <button class="btn btn--sm" id="resetRankedBtn" title="把已经排进赛道的内容全部打回内容池（不会删除）">清空已排名项目</button>
+                        <button class="btn btn--sm btn--danger" id="clearPoolBtn" title="一键删除内容池里的全部内容（已排进赛道的不受影响）">清空内容池</button>
+                    </div>
+                    <div class="stack" style="margin-bottom: 9px;">
+                        <textarea id="textItemInput" placeholder="批量添加文字项：每行一个，或用逗号 / 分号分隔&#10;例如：苹果&#10;香蕉"></textarea>
+                        <div class="inline">
+                            <button class="btn btn--sm" id="addTextBtn">加入内容池</button>
+                            <span style="font-size: 11.5px; color: var(--muted);">Ctrl + Enter 直接提交</span>
+                        </div>
+                    </div>
+                    <div style="font-size: 11.5px; color: var(--muted); margin-bottom: 8px;">
+                        「清空已排名项目」把赛道内容打回内容池，「清空内容池」才会真正删除内容池里的项。
+                    </div>
+                    <div class="pool-grid" id="poolGrid"></div>
+                </section>
+            </aside>
+
+            <!-- ================= 榜单 ================= -->
+            <main class="board">
+                <div class="board__bar">
+                    <h1 class="board__title" id="boardTitleDisplay" title="双击可直接修改榜单标题">从夯到拉 · 排名工坊</h1>
+                    <div class="board__filters">
+                        <select id="tierFilter" style="width: auto;">
+                            <option value="all">全部赛道</option>
+                        </select>
+                        <select id="noteFilter" style="width: auto;">
+                            <option value="all">全部点评状态</option>
+                            <option value="with">已写点评</option>
+                            <option value="without">未写点评</option>
+                        </select>
+                        <button class="btn btn--sm" id="clearFilterBtn">清除筛选</button>
+                    </div>
+                </div>
+                <div class="board__status" id="boardStatus"></div>
+                <div class="board__scroll">
+                    <div class="tiers" id="tierContainer"></div>
+                </div>
+
+                <section class="summary">
+                    <div class="side-card__title" style="margin-bottom: 8px;">
+                        本次排名摘要
+                        <span class="inline">
+                            <button class="btn btn--sm" id="refreshSummaryBtn">刷新</button>
+                            <button class="btn btn--sm" id="copySummaryBtn">复制摘要</button>
+                        </span>
+                    </div>
+                    <div class="summary__box" id="summaryText">暂无内容，先上传图片或添加文字项吧。</div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- ================= 内容详情 ================= -->
+    <div class="modal" id="itemModal">
+        <div class="modal__panel">
+            <button class="btn btn--icon modal__close" id="itemModalClose" title="关闭（Esc）">✕</button>
+            <div class="modal__title" id="itemModalTitle">内容详情</div>
+            <div class="modal__layout">
+                <div class="modal__preview" id="itemPreview"></div>
+                <div class="modal__side">
+                    <label class="field">
+                        <span>项目名称</span>
+                        <input type="text" id="itemName" placeholder="给它起个名字">
+                    </label>
+                    <label class="field">
+                        <span>点评 / 排名理由</span>
+                        <textarea id="itemNote" style="min-height: 96px;" placeholder="写下排它的理由，会一起进摘要和导出图片。"></textarea>
+                    </label>
+                    <div class="modal__meta" id="itemMeta">—</div>
+                    <div class="tier-buttons" id="tierButtons"></div>
+                    <div class="modal__actions">
+                        <button class="btn btn--primary btn--sm" id="itemSaveBtn">保存</button>
+                        <button class="btn btn--sm" id="itemPrevBtn">← 上一项</button>
+                        <button class="btn btn--sm" id="itemNextBtn">下一项 →</button>
+                        <button class="btn btn--sm" id="itemPoolBtn">退回内容池</button>
+                        <button class="btn btn--sm btn--danger" id="itemDeleteBtn">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 赛道编辑 ================= -->
+    <div class="modal" id="tierModal">
+        <div class="modal__panel modal__panel--sm">
+            <button class="btn btn--icon modal__close" id="tierModalClose" title="关闭">✕</button>
+            <div class="modal__title" id="tierModalTitle">编辑赛道</div>
+            <label class="field">
+                <span>赛道名称</span>
+                <input type="text" id="tierLabelInput" placeholder="例如：夯 / 顶级 / 拉完了">
+            </label>
+            <label class="field">
+                <span>赛道说明</span>
+                <input type="text" id="tierDescInput" placeholder="一句话说明这一档的标准">
+            </label>
+            <div class="field">
+                <span>赛道颜色（9 种预设）</span>
+                <div class="swatch-row" id="tierSwatches"></div>
+                <div class="view-sub" style="font-size: 12px; color: var(--muted); margin-top: 6px;">从红到淡蓝由上到下排列，点色块即可套用</div>
+            </div>
+            <div class="modal__actions" style="margin-top: 16px;">
+                <button class="btn btn--primary btn--sm" id="tierModalSave">保存</button>
+                <button class="btn btn--sm btn--danger" id="tierModalDelete">删除此赛道</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 导出设置 ================= -->
+    <div class="modal" id="exportModal">
+        <div class="modal__panel modal__panel--sm">
+            <button class="btn btn--icon modal__close" id="exportModalClose" title="关闭">✕</button>
+            <div class="modal__title" id="exportModalTitle">导出图片</div>
+            <div class="inline" style="margin-bottom: 14px;">
+                <label class="switch"><input type="checkbox" id="exportTitleToggle" checked><span>显示榜单标题</span></label>
+                <label class="switch"><input type="checkbox" id="exportPoolToggle"><span>附带内容池</span></label>
+                <label class="switch"><input type="checkbox" id="exportSummaryToggle"><span>附带结果摘要</span></label>
+            </div>
+            <div class="hint-row" id="exportHint">导出时会临时隐藏界面按钮，只保留榜单本身。</div>
+            <div class="modal__actions" style="margin-top: 16px;">
+                <button class="btn btn--primary btn--sm" id="exportRunBtn">开始导出</button>
+                <button class="btn btn--sm" id="exportCancelBtn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 使用说明 ================= -->
+    <div class="modal" id="helpModal">
+        <div class="modal__panel modal__panel--sm">
+            <button class="btn btn--icon modal__close" id="helpModalClose" title="关闭">✕</button>
+            <div class="modal__title">使用说明</div>
+            <div class="hint-row">
+                <p><strong>排名</strong>：把左侧内容池的卡片拖到任意赛道；赛道内拖动可以调整顺序。</p>
+                <p style="margin-top: 8px;"><strong>详情</strong>：单击卡片打开详情，可改名、写点评、切换赛道；方向键切换同赛道上一项 / 下一项。</p>
+                <p style="margin-top: 8px;"><strong>改名</strong>：双击卡片名称或赛道名称即可直接修改。</p>
+                <p style="margin-top: 8px;"><strong>快捷键</strong>：<code>Ctrl+S</code> 导出图片 · <code>Ctrl+F</code> 搜索 · <code>N</code> 演示模式下召唤下一张 · <code>Esc</code> 关闭弹窗 / 退出演示 · <code>Ctrl+V</code> 粘贴截图</p>
+                <p style="margin-top: 8px;"><strong>数据</strong>：改动自动写入程序目录 <code>data\state.json</code>；换电脑时复制该文件，或用「导出 JSON / 导入 JSON」搬移。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 演示模式：召唤下一张 ================= -->
+    <div class="summon-bar" id="summonBar">
+        <button class="btn btn--primary summon-btn" id="summonBtn" type="button" title="点击弹出下一张待处理内容（快捷键 N）">召唤下一张</button>
+        <span class="summon-hint">演示模式 · 快捷键 <code>N</code></span>
+    </div>
+
+    <div class="toasts" id="toasts"></div>
+
+    <input type="file" id="fileInput" class="file-input" accept="image/*" multiple>
+    <input type="file" id="jsonInput" class="file-input" accept=".json,application/json">
+
+    <script src="app.js"></script>
+</body>
+
+</html>
